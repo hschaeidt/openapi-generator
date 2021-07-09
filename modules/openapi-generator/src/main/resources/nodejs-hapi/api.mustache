@@ -1,0 +1,35 @@
+import * as hapi from '@hapi/hapi';
+{{#imports}}
+import { {{classname}} } from '../{{import}}';
+{{/imports}}
+
+export interface HapiHandlers {
+{{#operations}}
+{{#operation}}
+    {{operationId}}({{#hasPathParams}}pathParams: {{> util/path_params_type}}{{/hasPathParams}}{{> util/post_path_params_comma}}{{#hasQueryParams}}queryParams: {{> util/query_params_type}}{{/hasQueryParams}}{{#hasQueryParams}}{{#hasBodyParam}}, {{/hasBodyParam}}{{/hasQueryParams}}{{#hasBodyParam}}bodyParams: {{> util/body_params_type}}{{/hasBodyParam}}): {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}};
+{{/operation}}
+{{/operations}}
+}
+
+export const plugin = (handlers: HapiHandlers): hapi.Plugin<{}> => ({
+    name: '{{classFilename}}',
+    version: '{{npmVersion}}',
+    register: (server: hapi.Server, options: {}) => {
+        {{#operations}}
+        {{#operation}}
+        server.route({
+            method: '{{httpMethod}}',
+            path: '{{path}}',
+            handler: (request, h) => {
+                {{#returnType}}const result = {{/returnType}}handlers.{{operationId}}({{#hasPathParams}}request.params as {{> util/path_params_type}}{{/hasPathParams}}{{> util/post_path_params_comma}}{{#hasQueryParams}}request.query as {{> util/query_params_type}}{{/hasQueryParams}}{{#hasQueryParams}}{{#hasBodyParam}}, {{/hasBodyParam}}{{/hasQueryParams}}{{#hasBodyParam}}request.payload as {{> util/body_params_type}}{{/hasBodyParam}});
+
+                return h.response({{#returnType}}result{{/returnType}}).code(200);
+            },
+        });
+        {{^-last}}
+
+        {{/-last}}
+        {{/operation}}
+        {{/operations}}
+    },
+});

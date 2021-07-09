@@ -1,0 +1,29 @@
+{{#models}}
+{{#model}}
+{{#imports}}
+import { {{.}} } from './{{.}}';
+{{#-last}}
+
+{{/-last}}
+{{/imports}}
+{{^isEnum}}
+export interface {{classname}}{{#parentSchema}} extends {{{parent}}} {{/parentSchema}} {
+{{#vars}}
+    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{classname}}{{enumName}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+{{/vars}}
+}
+{{/isEnum}}
+{{#hasEnums}}
+{{#vars}}
+{{#isEnum}}
+
+export type {{classname}}{{enumName}} ={{#allowableValues}}{{#values}} "{{.}}" {{^-last}}|{{/-last}}{{/values}}{{/allowableValues}};
+{{/isEnum}}
+{{/vars}}
+{{/hasEnums}}
+{{#isEnum}}
+
+export type {{classname}} ={{#allowableValues}}{{#values}} "{{.}}" {{^-last}}|{{/-last}}{{/values}}{{/allowableValues}};
+{{/isEnum}}
+{{/model}}
+{{/models}}

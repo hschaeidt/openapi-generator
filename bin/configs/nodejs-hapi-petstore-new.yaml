@@ -1,0 +1,6 @@
+generatorName: nodejs-hapi
+outputDir: samples/server/petstore/nodejs/hapi
+inputSpec: modules/openapi-generator/src/test/resources/3_0/petstore.yaml
+templateDir: modules/openapi-generator/src/main/resources/nodejs-hapi
+additionalProperties:
+  hideGenerationTimestamp: "true"
